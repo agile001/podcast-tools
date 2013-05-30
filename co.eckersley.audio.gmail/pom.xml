@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>co.eckersley.audio</groupId>
 	<artifactId>gmail</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>GMail Collector</name>
 	<description>GMail Email Spoken Audio Collector Channel</description>
 
