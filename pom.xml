@@ -18,6 +18,14 @@
 		<connection>scm:git:file://localhost/Users/david/git/co.eckersley/podcast-tools/</connection>
 		<developerConnection>scm:git:file://localhost/Users/david/git/co.eckersley/podcast-tools/</developerConnection>
 	</scm>
+	
+	<distributionManagement>
+	   <repository>
+	       <id>local</id>
+	       <name>local</name>
+	       <url>file://localhost/Users/david/.m2/repository/</url>
+	   </repository>
+	</distributionManagement>
 
     <modules>
         <module>co.eckersley.audio.gmail</module>
