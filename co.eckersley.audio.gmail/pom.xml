@@ -204,7 +204,7 @@
 	</build>
 	<scm>
 		<url>scm:git:file://localhost/Users/david/git/co.eckersley/podcast-tools</url>
-		<connection>scm:git:file://localhost/Users/david/git/co.eckersley/podcast-tools</connection>
-		<developerConnection>scm:git:file://localhost/Users/david/git/co.eckersley/podcast-tools</developerConnection>
+		<connection>scm:git:file://localhost/Users/david/git/co.eckersley/podcast-tools/co.eckersley.audio.gmail/</connection>
+		<developerConnection>scm:git:file://localhost/Users/david/git/co.eckersley/podcast-tools/co.eckersley.audio.gmail/</developerConnection>
 	</scm>
 </project>
