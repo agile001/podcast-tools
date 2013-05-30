@@ -3,7 +3,7 @@
 
 	<groupId>co.eckersley.audio</groupId>
 	<artifactId>podcast-tools-parent</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>podcast-tools-parent</name>
@@ -14,9 +14,9 @@
 	</properties>
 
 	<scm>
-		<url>scm:git:file://localhost/Users/david/git/co.eckersley/podcast-tools</url>
-		<connection>scm:git:file://localhost/Users/david/git/co.eckersley/podcast-tools</connection>
-		<developerConnection>scm:git:file://localhost/Users/david/git/co.eckersley/podcast-tools</developerConnection>
+		<url>scm:git:file://localhost/Users/david/git/co.eckersley/podcast-tools/</url>
+		<connection>scm:git:file://localhost/Users/david/git/co.eckersley/podcast-tools/</connection>
+		<developerConnection>scm:git:file://localhost/Users/david/git/co.eckersley/podcast-tools/</developerConnection>
 	</scm>
 
     <modules>
