@@ -203,8 +203,8 @@
 		</plugins>
 	</build>
 	<scm>
-		<url>scm:git:file://localhost/~/git/co.eckersley/podcast-tools</url>
-		<connection>scm:git:file://localhost/~/git/co.eckersley/podcast-tools</connection>
-		<developerConnection>scm:git:file://localhost/~/git/co.eckersley/podcast-tools</developerConnection>
+		<url>scm:git:file://localhost/Users/david/git/co.eckersley/podcast-tools</url>
+		<connection>scm:git:file://localhost/Users/david/git/co.eckersley/podcast-tools</connection>
+		<developerConnection>scm:git:file://localhost/Users/david/git/co.eckersley/podcast-tools</developerConnection>
 	</scm>
 </project>
