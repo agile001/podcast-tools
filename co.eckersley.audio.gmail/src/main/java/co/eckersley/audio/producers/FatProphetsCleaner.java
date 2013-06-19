@@ -10,8 +10,8 @@ public class FatProphetsCleaner extends HtmlCleaner {
     private final String FAT_WRAP_MARKER = "BENEFITS OF BECOMING A FAT PROPHETS MEMBER";
     private final String FAT_WEEKLY_MARKER = "Dear Member";
 
-    private final String START_ADVERTISEMENT_MARKER = "--------------------------------------------------------------------------------------------------";
-    private final String END_ADVERTISEMENT_MARKER = "--------------------------------------------------------------------------------------------------";
+    private final String START_ADVERTISEMENT_MARKER = "-------------------------------------------------------------------------------------------------";
+    private final String END_ADVERTISEMENT_MARKER =   "-------------------------------------------------------------------------------------------------";
     
 
     public String clean(String from, String subject, Document doc) {
@@ -33,7 +33,11 @@ public class FatProphetsCleaner extends HtmlCleaner {
         boolean started = false;
 
         for (Element e : trs) {
-            if (e.text().contains("Click here for the latest stock market news")) {
+            if (e.text().contains("No Portion of this website may be reproduced") ||
+                    e.text().contains("Copyright © 2012 FatProphets All Rights Reserved.") ||
+                    e.text().contains("Copyright © 2013 FatProphets All Rights Reserved.") ||
+                    e.text().contains("Interested in Joining Fat Prophets?") ||
+                    e.text().contains("Follow Us:")) {
                 if (started)
                     break;
             } else {
