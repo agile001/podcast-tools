@@ -52,8 +52,11 @@ public class GmailScanner {
 			
 			Set<String> fromList = fromMap.keySet();
 			
+			String uid = context.getEnvironment().getProperty("gmail.uid");
+			String pwd = context.getEnvironment().getProperty("gmail.pwd");
+			
 			ImapGmailClient client = new ImapGmailClient();
-			Credentials cred = new Credentials("dj.eckersley", "ADzDx2+l".toCharArray());
+			Credentials cred = new Credentials(uid, pwd.toCharArray());
 			
 			GmailConnection connection = new ImapGmailConnection(cred);
 			client.setConnection(connection);
