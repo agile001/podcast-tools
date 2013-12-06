@@ -9,15 +9,14 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import co.eckersley.audio.common.SpokenWordFeed;
-import co.eckersley.audio.common.SpokenWordItem;
-import co.eckersley.audio.repositories.SpokenWordFeedRepository;
-import co.eckersley.audio.repositories.SpokenWordItemRepository;
+import co.eckersley.audio.data.dao.Episode;
+import co.eckersley.audio.data.dao.Feed;
+import co.eckersley.audio.data.repositories.PodcastEpisodeRepository;
+import co.eckersley.audio.data.repositories.PodcastFeedRepository;
 
 import com.sun.syndication.feed.synd.SyndCategory;
 import com.sun.syndication.feed.synd.SyndCategoryImpl;
@@ -43,28 +42,23 @@ public class FeedProducer {
 
     private String HTTP_BASE = "http://home.eckersley.co/spoken_audio/";
 
-    SpokenWordItemRepository repository;
+    PodcastEpisodeRepository repository;
 
     public static void main(String[] args) {
 
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("META-INF/spring/application-context.xml");
 
         try {
-            SpokenWordFeedRepository repo2 = (SpokenWordFeedRepository) context.getBean("spokenWordFeedRepository");
-            SpokenWordItemRepository repo3 = (SpokenWordItemRepository) context.getBean("spokenWordItemRepository");
+            PodcastFeedRepository feedRepository = context.getBean(PodcastFeedRepository.class);
+            PodcastEpisodeRepository episodeRepository = (PodcastEpisodeRepository) context.getBean(PodcastEpisodeRepository.class);
 
-            // List<SpokenWordFeed> items = repo2.findAll();
-            // List<SpokenWordItem> items = repo3.findByFileNameIsNull();
-            // List<SpokenWordItem> items =
-            // repo3.findByCleanTextIsNullOrderByDateAsc();
+            FeedProducer producer = new FeedProducer(episodeRepository);
 
-            FeedProducer producer = new FeedProducer(repo3);
-
-            for (SpokenWordFeed feed : repo2.findAll()) {
+            for (Feed feed : feedRepository.findAll()) {
                 try {
                     producer.produce(feed);
                 } catch (Exception e) {
-                    logger.error("Error producing feed for: " + feed.getTile(), e);
+                    logger.error("Error producing feed for: " + feed.getTitle(), e);
                 }
             }
         } finally {
@@ -72,32 +66,32 @@ public class FeedProducer {
         }
     }
 
-    public FeedProducer(SpokenWordItemRepository repository) {
+    public FeedProducer(PodcastEpisodeRepository repository) {
         super();
         this.repository = repository;
     }
 
-    public void produce(SpokenWordFeed feedRef) throws Exception {
+    public void produce(Feed feedRef) throws Exception {
 
-        logger.info("Creating Feed for: " + feedRef.getTile());
+        logger.info("Creating Feed for: " + feedRef.getTitle());
 
-        SyndFeed feed = new SyndFeedImpl();
-        feed.setFeedType("rss_2.0");
-        feed.setTitle(feedRef.getTile());
-        feed.setLink(HTTP_BASE + c(feedRef.getTile()));
-        feed.setDescription(feedRef.getDescription());
+        SyndFeed podcastFeed = new SyndFeedImpl();
+        podcastFeed.setFeedType("rss_2.0");
+        podcastFeed.setTitle(feedRef.getTitle());
+        podcastFeed.setLink(HTTP_BASE + c(feedRef.getTitle()));
+        podcastFeed.setDescription(feedRef.getDescription());
 
         SyndImage image = new SyndImageImpl();
-        image.setTitle(feedRef.getTile());
-        image.setLink(HTTP_BASE + c(feedRef.getTile()) + ".xml");
-        image.setUrl(HTTP_BASE + "images/" + c(feedRef.getTile()) + ".png");
-        feed.setImage(image);
+        image.setTitle(feedRef.getTitle());
+        image.setLink(HTTP_BASE + c(feedRef.getTitle()) + ".xml");
+        image.setUrl(HTTP_BASE + "images/" + c(feedRef.getTitle()) + ".png");
+        podcastFeed.setImage(image);
 
         List<SyndCategory> categories = new ArrayList<SyndCategory>();
         SyndCategory category = new SyndCategoryImpl();
         category.setName("Spoken Audio");
         categories.add(category);
-        feed.setCategories(categories);
+        podcastFeed.setCategories(categories);
 
         List<SyndEntry> entries = new ArrayList<SyndEntry>();
 
@@ -105,7 +99,7 @@ public class FeedProducer {
         limitTime.add(Calendar.MONTH, -3);
         Calendar episodeTime = new GregorianCalendar();
 
-        for (SpokenWordItem item : repository.findByFeedAndCleanTextIsNotNullAndFileNameIsNotNullOrderByDateDesc(feedRef)) {
+        for (Episode item : repository.findByFeedAndPublishedTextIsNotNullAndFileNameIsNotNullOrderByDateDesc(feedRef)) {
 
             episodeTime.setTime(item.getDate());
 
@@ -126,8 +120,8 @@ public class FeedProducer {
 
                     SyndContent description = new SyndContentImpl();
                     description.setType("text/plain");
-                    description.setValue(StringUtils.abbreviate(item.getCleanText(), 1024 * 5));
-//                    description.setValue(item.getCleanText());
+                    // description.setValue(StringUtils.abbreviate(item.getCleanText(), 1024 * 5));
+                    description.setValue(item.getPublishedText());
                     entry.setDescription(description);
 
                     entries.add(entry);
@@ -137,17 +131,17 @@ public class FeedProducer {
                 }
             }
         }
-        feed.setEntries(entries);
-        feed.setLink(HTTP_BASE + c(feedRef.getTile()) + ".xml");
+        podcastFeed.setEntries(entries);
+        podcastFeed.setLink(HTTP_BASE + c(feedRef.getTitle()) + ".xml");
 
-        File feedFile = new File(basePath, f(feedRef.getTile()) + ".xml");
-        logger.debug("Outputting feed '{}' to: {}", feedRef.getTile(), feedFile.getAbsolutePath());
+        File feedFile = new File(basePath, f(feedRef.getTitle()) + ".xml");
+        logger.debug("Outputting feed '{}' to: {}", feedRef.getTitle(), feedFile.getAbsolutePath());
         Writer writer = new FileWriter(feedFile);
         SyndFeedOutput output = new SyndFeedOutput();
-        output.output(feed, writer);
+        output.output(podcastFeed, writer);
         writer.close();
 
-        logger.info("Finished creating Feed for: " + feedRef.getTile());
+        logger.info("Finished creating Feed for: " + feedRef.getTitle());
     }
 
     private String c(String i) {
@@ -157,20 +151,4 @@ public class FeedProducer {
     private String f(String i) {
         return i.toLowerCase().replace(" ", "_");
     }
-//
-//    private String getChecksum(String value) {
-//        try {
-//            MessageDigest md = MessageDigest.getInstance("SHA-1");
-//            md.update(value.getBytes());
-//            byte[] checksumBytes = md.digest();
-//            return convertToHex(checksumBytes);
-//        } catch (NoSuchAlgorithmException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-//
-//    private String convertToHex(byte[] checksumBytes) {
-//        BigInteger checksum = new BigInteger(1, checksumBytes);
-//        return checksum.toString(16);
-//    }
 }

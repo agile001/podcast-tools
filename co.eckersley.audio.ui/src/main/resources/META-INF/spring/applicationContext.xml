@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd 
+        ">
+
+    <context:property-placeholder location="classpath*:META-INF/spring/*.properties" />
+    <context:annotation-config />
+    <context:spring-configured />
+    <context:component-scan base-package="co.eckersley" />
+    
+<!--     <tx:annotation-driven transaction-manager="transactionManager" mode="aspectj" /> -->
+
+<!--    <tx:jta-transaction-manager id="transactionManager" /> -->
+
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+        <property name="driverClass" value="${db.driver}" />
+        <property name="jdbcUrl" value="${db.url}" />
+        <property name="user" value="${db.user}" />
+        <property name="password" value="${db.password}" />
+        <property name="initialPoolSize" value="5"></property>
+        <property name="minPoolSize" value="5"></property>
+        <property name="maxPoolSize" value="50" />
+        <property name="checkoutTimeout" value="1000" />
+        <property name="maxStatements" value="50"></property>
+        <property name="automaticTestTable" value="Z_C3P0_TEST_TABLE"></property>
+        <property name="testConnectionOnCheckin" value="true"></property>
+        <property name="idleConnectionTestPeriod" value="300"></property>
+    </bean>
+
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <property name="jpaProperties">
+            <map>
+                <entry key="hibernate.hbm2ddl.auto" value="${jpa.hibernate.hbm2ddl.auto}" />
+                <entry key="hibernate.dialect" value="${jpa.hibernate.dialect}" />
+                <entry key="hibernate.current_session_context_class" value="org.hibernate.context.internal.ThreadLocalSessionContext" />
+                <entry key="javax.persistence.validation.factory" value-ref="validator" />
+            </map>
+        </property>
+        <property name="packagesToScan" value="co.eckersley.audio.data.dao" />
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+                <property name="showSql" value="false" />
+                <property name="generateDdl" value="false" />
+                <property name="database" value="${jpa.vendor.database}" />
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
+
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory" />
+        <property name="dataSource" ref="dataSource" />
+        <property name="jpaDialect">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
+        </property>
+    </bean>
+
+    <jpa:repositories base-package="co.eckersley.audio.data.repositories" />
+
+</beans>

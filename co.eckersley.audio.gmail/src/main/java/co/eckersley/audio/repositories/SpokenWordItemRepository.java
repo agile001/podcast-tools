@@ -11,5 +11,5 @@ public interface SpokenWordItemRepository extends CrudRepository<SpokenWordItem,
 
 	public List<SpokenWordItem> findByFileNameIsNull();
 	public List<SpokenWordItem> findByCleanTextIsNullOrderByDateAsc();
-	public List<SpokenWordItem> findByFeedAndCleanTextIsNotNullAndFileNameIsNotNullOrderByDateAsc(SpokenWordFeed feed);
+	public List<SpokenWordItem> findByFeedAndCleanTextIsNotNullAndFileNameIsNotNullOrderByDateDesc(SpokenWordFeed feed);
 }

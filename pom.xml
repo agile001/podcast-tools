@@ -29,6 +29,7 @@
 
     <modules>
         <module>co.eckersley.audio.gmail</module>
+        <module>co.eckersley.audio.ui</module>
     </modules>
     
 	<dependencies>

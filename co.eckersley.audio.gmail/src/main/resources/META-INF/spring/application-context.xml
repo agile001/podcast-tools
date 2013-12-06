@@ -5,7 +5,7 @@
     xmlns:context="http://www.springframework.org/schema/context"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
     	http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
-        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd 
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd 
     	">
 
     <context:property-placeholder location="classpath*:META-INF/spring/*.properties" />
@@ -30,7 +30,6 @@
 		<property name="automaticTestTable" value="Z_C3P0_TEST_TABLE"></property>
 		<property name="testConnectionOnCheckin" value="true"></property>
 		<property name="idleConnectionTestPeriod" value="300"></property>
-<!-- 		<property name="connectionCustomizerClassName" value="com.riskflo.engage.common.EngageConnectionCustomizer"></property> -->
 	</bean>
 
 	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
@@ -43,7 +42,7 @@
 				<entry key="javax.persistence.validation.factory" value-ref="validator" />
 			</map>
 		</property>
-		<property name="packagesToScan" value="co.eckersley.audio.common" />
+		<property name="packagesToScan" value="co.eckersley.audio.data" />
 		<property name="jpaVendorAdapter">
 			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
 				<property name="showSql" value="false" />
@@ -63,6 +62,6 @@
 		</property>
 	</bean>
 
-	<jpa:repositories base-package="co.eckersley.audio.repositories" />
+	<jpa:repositories base-package="co.eckersley.audio.data.repositories" />
 
 </beans>
